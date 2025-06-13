@@ -4,7 +4,30 @@
 <div class="mt-6 w-full">
     <div class="px-3 card shadow-md bg-white">
         <div class="flex my-2 text-brainCore font-bold"> <img class="mr-2" src="/images/icons/flight.svg" width="28px">
-            <span>Information User</span></div>
+            <span>Dashboard</span>
+        </div>
+        <div>
+            
+        </div>
+        <table class="myTable display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Karyawan</th>
+                    <th>Periode</th>
+                    <th>Nilai</th>
+                </tr>
+            </thead>
+            <tbody>
+                @each((karyawan, index) in karyawanRangking)
+                <tr>
+                    <td>{{ index + 1 }}</td>
+                    <td>{{ karyawan.karyawan.karyawan.nama }}</td>
+                    <td>{{ karyawan.karyawan.periode }}</td>
+                    <td>{{ karyawan._avg.nilai }}</td>
+                </tr>
+                @end
+        </table>
     </div>
 </div>
 

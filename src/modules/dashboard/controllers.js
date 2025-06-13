@@ -1,7 +1,12 @@
+import * as DashboardService from './services.js';
+
 export const index = async (req, res, next) => {
     try {
+        const karyawanRangking = await DashboardService.karyawanRangking();
+        
         const data = {
-            title: 'Dashboard'
+            title: 'Dashboard',
+            karyawanRangking,
         }
 
         res.edge('pages/dashboard/index', data);

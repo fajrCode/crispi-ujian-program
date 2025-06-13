@@ -10,44 +10,40 @@
 
         <div class="mt-5 grid grid-cols-1 gap-6 sm:grid-cols-6">
           <div class="sm:col-span-3">
-            <label for="name-airline" class="block text-sm font-medium text-gray-900">Nama</label>
+            <label for="name-airline" class="block text-sm font-medium text-gray-900">Karyawan</label>
             <div class="mt-1">
-              <input type="hidden" name="id" id="id" value="{{ karyawan.id }}">
-              <input type="text" name="nama" id="nama" autocomplete="full-name" value="{{ karyawan.nama }}"
+              <select name="karyawanId" id="karyawanId"
                 class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder-gray-400 focus:outline-indigo-600 focus:ring-2 focus:ring-indigo-600 sm:text-sm">
-            </div>
-          </div>
-          <div class="sm:col-span-3">
-            <label for="name-airline" class="block text-sm font-medium text-gray-900">Jabatan</label>
-            <div class="mt-1">
-              <select name="jabatan" id="jabatan"
-                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder-gray-400 focus:outline-indigo-600 focus:ring-2 focus:ring-indigo-600 sm:text-sm">
-                <option value="">Pilih Jabatan</option>
-                <option value="Pimpinan" {{ karyawan.jabatan==="Pimpinan" ? "Selected" : "" }}>Pimpinan</option>
-                <option value="Admin" {{ karyawan.jabatan==="Admimn" ? "Selected" : "" }}>Admin</option>
-                <option value="Inspektur" {{ karyawan.jabatan==="Inspektur" ? "Selected" : "" }}>Inspektur</option>
-                <option value="Helper" {{ karyawan.jabatan==="Helper" ? "Selected" : "" }}>Helper</option>
+                <option value="">Pilih Karyawan</option>
+                @each((karyawan, index) in karyawans)
+                <option value="{{ karyawan.id }}">{{karyawan.nama}}</option>
+                @end
               </select>
             </div>
           </div>
           <div class="sm:col-span-3">
-            <label for="name-airline" class="block text-sm font-medium text-gray-900">Unit Kerja</label>
+            <label for="name-airline" class="block text-sm font-medium text-gray-900">Kompetensi</label>
             <div class="mt-1">
-              <select name="unitKerja" id="unitKerja"
+              <select name="kompetensiId" id="kompetensiId"
                 class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder-gray-400 focus:outline-indigo-600 focus:ring-2 focus:ring-indigo-600 sm:text-sm">
-                <option value="">Pilih Unit Kerja</option>
-                <option value="General" {{ karyawan.unitKerja==="General" ? "Selected" : "" }}>General</option>
-                <option value="Laboratorium" {{ karyawan.unitKerja==="Laboratorium" ? "Selected" : "" }}>Laboratorium
-                </option>
-                <option value="Lapangan" {{ karyawan.unitKerja==="Lapangan" ? "Selected" : "" }}>Lapangan</option>
+                <option value="">Pilih Kompetensi</option>
+                @each((kompetensi, index) in kompetensis)
+                <option value="{{ kompetensi.id }}">{{kompetensi.namaKompetensi}}</option>
+                @end
               </select>
             </div>
           </div>
           <div class="sm:col-span-3">
-            <label for="name-airline" class="block text-sm font-medium text-gray-900">Tanggal Bergabung</label>
+            <label for="name-airline" class="block text-sm font-medium text-gray-900">Periode</label>
             <div class="mt-1">
-              <input type="date" name="tanggalBergabung" id="tanggalBergabung" autocomplete="tanggal-bergabung"
-                value="{{ karyawan.tanggalBergabung }}"
+              <input type="text" name="periode" id="periode" autocomplete="periode" placeholder="2025-Q1"
+                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder-gray-400 focus:outline-indigo-600 focus:ring-2 focus:ring-indigo-600 sm:text-sm">
+            </div>
+          </div>
+          <div class="sm:col-span-3">
+            <label for="name-airline" class="block text-sm font-medium text-gray-900">Nilai</label>
+            <div class="mt-1">
+              <input type="number" name="nilai" id="nilai" autocomplete="nilai" max="100" min="0"
                 class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder-gray-400 focus:outline-indigo-600 focus:ring-2 focus:ring-indigo-600 sm:text-sm">
             </div>
           </div>
@@ -56,7 +52,7 @@
     </div>
     <div class="mt-6 flex items-center justify-end gap-6">
       <button type="button" class="text-sm font-semibold text-gray-900">Cancel</button>
-      <button type="button" onclick="update()"
+      <button type="button" onclick="store()"
         class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline focus:ring-2 focus:ring-indigo-600">
         Save
       </button>
@@ -65,26 +61,25 @@
 </div>
 
 <script>
-  const update = async () => {
-    let id = document.getElementById('id').value;
-    let nama = document.getElementById('nama').value;
-    let jabatan = document.getElementById('jabatan').value;
-    let unitKerja = document.getElementById('unitKerja').value;
-    let tanggalBergabung = document.getElementById('tanggalBergabung').value;
+  const store = async () => {
+    let karyawanId = document.getElementById('karyawanId').value;
+    let kompetensiId = document.getElementById('kompetensiId').value;
+    let periode = document.getElementById('periode').value;
+    let nilai = document.getElementById('nilai').value;
 
     try {
-      let response = await fetch('/karyawan/update/' + id, {
-        method: 'PATCH',
+      let response = await fetch('/penilaian/store', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ nama, jabatan, unitKerja, tanggalBergabung }),
+        body: JSON.stringify({ karyawanId, kompetensiId, periode, nilai }),
       });
 
       if (response.status == 200) {
         showToast('success', "Success", 'Data berhasil disimpan');
         setTimeout(() => {
-          window.location.href = '/karyawan';
+          window.location.href = '/penilaian';
         }, 1000);
 
       } else {
@@ -95,7 +90,7 @@
       // Tampilkan pesan sukses
       showToast('success', "Success", "Data berhasil dibuat");
       setTimeout(() => {
-        window.location.href = '/karyawan';
+        window.location.href = '/penilaian';
       }, 1000);
     } catch (error) {
       showToast('error', "Error", "Terjadi kesalahan saat memperbarui data");
