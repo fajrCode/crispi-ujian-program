@@ -5,43 +5,23 @@
   <form>
     <div class="space-y-12">
       <div class="border-b border-gray-900/10 pb-12">
-        <h2 class="text-lg font-semibold text-gray-900">Edit Airline Information</h2>
-        <p class="mt-1 text-sm text-gray-600">Update the information for this airline.</p>
+        <h2 class="text-lg font-semibold text-gray-900">Personal Information</h2>
+        <p class="mt-1 text-sm text-gray-600">Use a permanent address where you can receive mail.</p>
 
         <div class="mt-5 grid grid-cols-1 gap-6 sm:grid-cols-6">
           <div class="sm:col-span-3">
-            <label for="code-airline" class="block text-sm font-medium text-gray-900">Code</label>
+            <label for="name-airline" class="block text-sm font-medium text-gray-900">Nama</label>
             <div class="mt-1">
-              <input 
-                type="text" 
-                name="code-airline" 
-                id="code-airline" 
-                value="{{ airline.code }}"
-                autocomplete="given-name" 
+              <input type="hidden" name="id" id="id" value="{{ kompetensi.id }}">
+              <input type="text" name="namaKompetensi" id="namaKompetensi" autocomplete="full-name" value="{{ kompetensi.namaKompetensi }}"
                 class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder-gray-400 focus:outline-indigo-600 focus:ring-2 focus:ring-indigo-600 sm:text-sm">
             </div>
           </div>
           <div class="sm:col-span-3">
-            <label for="name-airline" class="block text-sm font-medium text-gray-900">Name</label>
+            <label for="name-airline" class="block text-sm font-medium text-gray-900">Deskripsi</label>
             <div class="mt-1">
-              <input 
-                type="text" 
-                name="name-airline" 
-                id="name-airline" 
-                value="{{ airline.name }}"
-                autocomplete="family-name" 
+              <input type="text" name="deskripsi" id="deskripsi" autocomplete="full-name" value="{{ kompetensi.deskripsi }}"
                 class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder-gray-400 focus:outline-indigo-600 focus:ring-2 focus:ring-indigo-600 sm:text-sm">
-            </div>
-          </div>
-          <div class="sm:col-span-4">
-            <label for="image-airline" class="block text-sm font-medium text-gray-900">Image</label>
-            <div class="mt-1">
-              <input 
-                type="file" 
-                id="image-airline" 
-                name="image-airline" 
-                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder-gray-400 focus:outline-indigo-600 focus:ring-2 focus:ring-indigo-600 sm:text-sm">
-              <p class="mt-2 text-sm text-gray-500">Current image: {{ airline.image }}</p>
             </div>
           </div>
         </div>
@@ -49,90 +29,53 @@
     </div>
     <div class="mt-6 flex items-center justify-end gap-6">
       <button type="button" class="text-sm font-semibold text-gray-900">Cancel</button>
-      <button 
-        type="button" 
-        onclick="store()"
+      <button type="button" onclick="update()"
         class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline focus:ring-2 focus:ring-indigo-600">
-        Update
+        Save
       </button>
     </div>
   </form>
 </div>
-  
+
 <script>
-    
-    const store = async () => {
-        showToast('error', 'king','kingnopal');
-      let code = document.getElementById('code-airline').value.trim();
-      let name = document.getElementById('name-airline').value.trim();
-      let imageInput = document.getElementById('image-airline');
-      let image = imageInput.files[0];
-  console.log('king')
-      try {
-        // Validasi awal
-        if (!code || !name) {
-          showToast('error', "Error", "Code dan Name tidak boleh kosong");
-          return;
-        }
-  
-        // Kirim data maskapai (Code & Name) ke endpoint pertama
-        const airlineResponse = await fetch('{{ api }}/api/v1/airlines/{{ airline.id }}', {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
-          },
-          body: JSON.stringify({ code, name }),
-        });
-  
-        if (!airlineResponse.ok) {
-          const result = await airlineResponse.json();
-          showToast('error', "Error", result.message || "Gagal memperbarui data maskapai");
-          return;
-        }
-  
-        // Validasi dan kirim gambar jika ada
-        if (image) {
-          const allowedTypes = ['image/jpeg', 'image/png'];
-          if (!allowedTypes.includes(image.type)) {
-            showToast('error', "Error", "Hanya format JPEG dan PNG yang diperbolehkan");
-            return;
-          }
-  
-          if (image.size > 2 * 1024 * 1024) {
-            showToast('error', "Error", "Ukuran file tidak boleh lebih dari 2MB");
-            return;
-          }
-  
-          let formData = new FormData();
-          formData.append('image', image);
-  
-          const imageResponse = await fetch('{{ api }}/api/v1/airlines/image/{{ airline.id }}', {
-            method: 'PATCH',
-            headers: {
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-            },
-            body: formData,
-          });
-  
-          if (!imageResponse.ok) {
-            const result = await imageResponse.json();
-            showToast('error', "Error", result.message || "Gagal memperbarui gambar");
-            return;
-          }
-        }
-  
-        // Tampilkan pesan sukses
-        showToast('success', "Success", "Data berhasil diperbarui");
+  const update = async () => {
+    let id = document.getElementById('id').value;
+    let namaKompetensi = document.getElementById('namaKompetensi').value;
+    let deskripsi = document.getElementById('deskripsi').value;
+
+    try {
+      let response = await fetch('/kompetensi/update/' + id, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ namaKompetensi, deskripsi }),
+      });
+
+      if (response.status == 200) {
+        showToast('success', "Success", 'Data berhasil disimpan');
         setTimeout(() => {
-          window.location.href = '/admin/airlines';
+          window.location.href = '/kompetensi';
         }, 1000);
-      } catch (error) {
-        showToast('error', "Error", "Terjadi kesalahan saat memperbarui data");
+
+      } else {
+        const result = await response.json();
+        showToast('error', "Error", result.message);
+
       }
-    };
-  </script>
-  
+      // Tampilkan pesan sukses
+      showToast('success', "Success", "Data berhasil dibuat");
+      setTimeout(() => {
+        window.location.href = '/kompetensi';
+      }, 1000);
+    } catch (error) {
+      console.error(error.message);
+      showToast('error', "Error", "Terjadi kesalahan saat memperbarui data");
+    }
+
+  };
+
+</script>
 
 @endslot
 @end

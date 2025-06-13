@@ -1,9 +1,9 @@
-import * as UserService from './services.js';
+import * as KaryawanService from './services.js';
 
 //View
 export const index = async (req, res, next) => {
     try {
-        const karyawans = await UserService.getAllKaryawan();
+        const karyawans = await KaryawanService.getAllKaryawan();
         const data = {
             title: 'Karyawan',
             karyawans,
@@ -29,7 +29,7 @@ export const create = async (req, res, next) => {
 
 export const edit = async (req, res, next) => {
     try {
-        const karyawan = await UserService.getKaryawanById(req.params.id);
+        const karyawan = await KaryawanService.getKaryawanById(req.params.id);
         karyawan.tanggalBergabung = karyawan.tanggalBergabung.toISOString().split('T')[0];
         const data = {
             title: 'Edit Karyawan',
@@ -45,7 +45,7 @@ export const edit = async (req, res, next) => {
 //API
 export const store = async (req, res, next) => {
     try {
-        const karyawan = await UserService.createKaryawan(req.body);
+        const karyawan = await KaryawanService.createKaryawan(req.body);
 
         res.status(201).json({
             status: 'success',
@@ -59,7 +59,7 @@ export const store = async (req, res, next) => {
 
 export const update = async (req, res, next) => {
     try {
-        const karyawan = await UserService.updateKaryawan(req.params.id, req.body);
+        const karyawan = await KaryawanService.updateKaryawan(req.params.id, req.body);
 
         res.status(200).json({
             status: 'success',
@@ -73,7 +73,8 @@ export const update = async (req, res, next) => {
 
 export const destroy = async (req, res, next) => {
     try {
-        const karyawan = await UserService.deleteKaryawan(req.params.id);
+        console.log(req.params.id);
+        const karyawan = await KaryawanService.deleteKaryawan(req.params.id);
 
         res.status(200).json({
             status: 'success',

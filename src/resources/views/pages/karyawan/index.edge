@@ -35,9 +35,9 @@
                         <img src="/images/icons/edit.svg" alt="trash-icon">
                         <span>Ubah</span>
                     </a>
-                    <button class="py-1 px-2 rounded-lg flex gap-2 items-center text-sm hover:bg-blue-200"
+                    <button type="button" class="py-1 px-2 rounded-lg flex gap-2 items-center text-sm hover:bg-blue-200"
                         title="Hapus Karyawan" data-tooltip="Hapus Karyawan" data-tooltip-position="top"
-                        onclick="deleteKaryawan({{ karyawan.id }})">
+                        onclick="destroy({{ karyawan.id }})">
                         <img src="/images/icons/trash.svg" alt="trash-icon">
                         <span>Hapus</span>
                     </button>
@@ -48,11 +48,11 @@
 </div>
 
 <script>
-    function deleteKaryawan(id) {
+    async function destroy(id) {
         const isDelete = confirm('Apakah Anda yakin ingin menghapus karyawan ini?');
         if (!isDelete) return;
         try {
-            let response = await fetch('/karyawan', {
+            let response = await fetch('/karyawan/' + id, {
                 method: 'DELETE',
             });
 
