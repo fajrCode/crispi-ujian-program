@@ -1,0 +1,109 @@
+@layout.app({ menu: title, sub })
+@slot('main')
+
+<div>
+  <form>
+    <div class="space-y-12">
+      <div class="border-b border-gray-900/10 pb-12">
+        <h2 class="text-lg font-semibold text-gray-900">Personal Information</h2>
+        <p class="mt-1 text-sm text-gray-600">Use a permanent address where you can receive mail.</p>
+
+        <div class="mt-5 grid grid-cols-1 gap-6 sm:grid-cols-6">
+          <div class="sm:col-span-3">
+            <label for="name-airline" class="block text-sm font-medium text-gray-900">Nama</label>
+            <div class="mt-1">
+              <input type="hidden" name="id" id="id" value="{{ karyawan.id }}">
+              <input type="text" name="nama" id="nama" autocomplete="full-name" value="{{ karyawan.nama }}"
+                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder-gray-400 focus:outline-indigo-600 focus:ring-2 focus:ring-indigo-600 sm:text-sm">
+            </div>
+          </div>
+          <div class="sm:col-span-3">
+            <label for="name-airline" class="block text-sm font-medium text-gray-900">Jabatan</label>
+            <div class="mt-1">
+              <select name="jabatan" id="jabatan"
+                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder-gray-400 focus:outline-indigo-600 focus:ring-2 focus:ring-indigo-600 sm:text-sm">
+                <option value="">Pilih Jabatan</option>
+                <option value="Pimpinan" {{ karyawan.jabatan==="Pimpinan" ? "Selected" : "" }}>Pimpinan</option>
+                <option value="Admin" {{ karyawan.jabatan==="Admimn" ? "Selected" : "" }}>Admin</option>
+                <option value="Inspektur" {{ karyawan.jabatan==="Inspektur" ? "Selected" : "" }}>Inspektur</option>
+                <option value="Helper" {{ karyawan.jabatan==="Helper" ? "Selected" : "" }}>Helper</option>
+              </select>
+            </div>
+          </div>
+          <div class="sm:col-span-3">
+            <label for="name-airline" class="block text-sm font-medium text-gray-900">Unit Kerja</label>
+            <div class="mt-1">
+              <select name="unitKerja" id="unitKerja"
+                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder-gray-400 focus:outline-indigo-600 focus:ring-2 focus:ring-indigo-600 sm:text-sm">
+                <option value="">Pilih Unit Kerja</option>
+                <option value="General" {{ karyawan.unitKerja==="General" ? "Selected" : "" }}>General</option>
+                <option value="Laboratorium" {{ karyawan.unitKerja==="Laboratorium" ? "Selected" : "" }}>Laboratorium
+                </option>
+                <option value="Lapangan" {{ karyawan.unitKerja==="Lapangan" ? "Selected" : "" }}>Lapangan</option>
+              </select>
+            </div>
+          </div>
+          <div class="sm:col-span-3">
+            <label for="name-airline" class="block text-sm font-medium text-gray-900">Tanggal Bergabung</label>
+            <div class="mt-1">
+              <input type="date" name="tanggalBergabung" id="tanggalBergabung" autocomplete="tanggal-bergabung"
+                value="{{ karyawan.tanggalBergabung }}"
+                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder-gray-400 focus:outline-indigo-600 focus:ring-2 focus:ring-indigo-600 sm:text-sm">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-6 flex items-center justify-end gap-6">
+      <button type="button" class="text-sm font-semibold text-gray-900">Cancel</button>
+      <button type="button" onclick="update()"
+        class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline focus:ring-2 focus:ring-indigo-600">
+        Save
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const update = async () => {
+    let id = document.getElementById('id').value;
+    let nama = document.getElementById('nama').value;
+    let jabatan = document.getElementById('jabatan').value;
+    let unitKerja = document.getElementById('unitKerja').value;
+    let tanggalBergabung = document.getElementById('tanggalBergabung').value;
+
+    try {
+      let response = await fetch('/karyawan/update/' + id, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ nama, jabatan, unitKerja, tanggalBergabung }),
+      });
+
+      if (response.status == 200) {
+        showToast('success', "Success", 'Data berhasil disimpan');
+        setTimeout(() => {
+          window.location.href = '/karyawan';
+        }, 1000);
+
+      } else {
+        const result = await response.json();
+        showToast('error', "Error", result.message);
+
+      }
+      // Tampilkan pesan sukses
+      showToast('success', "Success", "Data berhasil dibuat");
+      setTimeout(() => {
+        window.location.href = '/karyawan';
+      }, 1000);
+    } catch (error) {
+      showToast('error', "Error", "Terjadi kesalahan saat memperbarui data");
+    }
+
+  };
+
+</script>
+
+@endslot
+@end

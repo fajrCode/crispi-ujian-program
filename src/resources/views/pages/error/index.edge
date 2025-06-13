@@ -1,0 +1,12 @@
+@layout.guest()
+    @slot('main')
+    <div class="flex flex-col justify-center items-center h-screen text-center">
+        <h1 class="text-3xl font-bold py-5">Error {{ code }}</h1>
+        <img src="/public/images/sorry.gif" alt="sorry" width="225px">
+        <p class="text-lg">Sorry</p>
+        <p class="text-lg">{{ message }}</p>
+
+        <button class="bg-white text-black rounded-lg px-4 py-2 my-10 text-lg" onclick="history.back()" type="button">Back</button>
+    </div>
+    @endslot
+@end

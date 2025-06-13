@@ -1,0 +1,82 @@
+@layout.app({ menu: title})
+@slot('main')
+
+<div>
+    <div class="mb-5">
+        <a href="/karyawan/create"
+            class="w-fit flex items-center gap-2 py-1 pl-2 pr-3 rounded-lg hover:bg-green-200 text-green-600">
+            <img src="/images/icons/add.svg" alt="trash-icon">
+            <span>Add</span>
+        </a>
+    </div>
+    <table class="myTable display" style="width:100%">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama</th>
+                <th>Jabatan</th>
+                <th>Unit Kerja</th>
+                <th>Tanggal Bergabung</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @each((karyawan, index) in karyawans)
+            <tr>
+                <td>{{ index + 1 }}</td>
+                <td>{{ karyawan.nama }}</td>
+                <td>{{ karyawan.jabatan }}</td>
+                <td>{{ karyawan.unitKerja }}</td>
+                <td>{{ karyawan.tanggalBergabung }}</td>
+                <td class="flex gap-2">
+                    <a class="py-1 px-2 rounded-lg flex gap-2 items-center text-sm hover:bg-blue-200"
+                        href="/karyawan/edit/{{ karyawan.id }}" title="Edit Karyawan" data-tooltip="Edit Karyawan"
+                        data-tooltip-position="top">
+                        <img src="/images/icons/edit.svg" alt="trash-icon">
+                        <span>Ubah</span>
+                    </a>
+                    <button class="py-1 px-2 rounded-lg flex gap-2 items-center text-sm hover:bg-blue-200"
+                        title="Hapus Karyawan" data-tooltip="Hapus Karyawan" data-tooltip-position="top"
+                        onclick="deleteKaryawan({{ karyawan.id }})">
+                        <img src="/images/icons/trash.svg" alt="trash-icon">
+                        <span>Hapus</span>
+                    </button>
+                </td>
+            </tr>
+            @end
+    </table>
+</div>
+
+<script>
+    function deleteKaryawan(id) {
+        const isDelete = confirm('Apakah Anda yakin ingin menghapus karyawan ini?');
+        if (!isDelete) return;
+        try {
+            let response = await fetch('/karyawan', {
+                method: 'DELETE',
+            });
+
+            if (response.status == 200) {
+                showToast('success', "Success", 'Data berhasil disimpan');
+                setTimeout(() => {
+                    window.location.href = '/karyawan';
+                }, 1000);
+
+            } else {
+                const result = await response.json();
+                showToast('error', "Error", result.message);
+
+            }
+            // Tampilkan pesan sukses
+            showToast('success', "Success", "Data berhasil dibuat");
+            setTimeout(() => {
+                window.location.href = '/karyawan';
+            }, 1000);
+        } catch (error) {
+            showToast('error', "Error", "Terjadi kesalahan saat memperbarui data");
+        }
+    }
+</script>
+
+@endslot
+@end
