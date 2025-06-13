@@ -7,30 +7,45 @@ export const karyawanRangking = async () => {
         _avg: {
             nilai: true,
         },
-        orderBy: {
-            _avg: {
-                nilai: 'desc',
-            },
-        },
     });
-    const karyawanRangking = await Promise.all(rangking.map(async (item) => {
-        const karyawan = await db.penilaian.findUnique({
-            where: { karyawanId: item.karyawanId },
-            select: {
-                id: true,
-                karyawan:{
-                    select: {
-                        id: true,
-                        nama: true,
-                    }
-                },
-                periode: true,
-            }
+
+    // Kelompokkan berdasarkan periode
+    const groupedByPeriode = rangking.reduce((acc, item) => {
+        const periode = item.periode;
+        if (!acc[periode]) {
+            acc[periode] = [];
+        }
+        acc[periode].push(item);
+        return acc;
+    }, {});
+
+    // Ambil 1 karyawan dengan nilai tertinggi dari setiap periode
+    const topPeriode = Object.values(groupedByPeriode).map(group => {
+        return group.reduce((max, item) => {
+            return item._avg.nilai > max._avg.nilai ? item : max;
         });
-        return {
-            ...item,
-            karyawan,
-        };
-    }));
+    });
+
+    // Ambil detail karyawan dari hasil topPeriode
+    const karyawanRangking = await Promise.all(
+        topPeriode.map(async (item) => {
+            const karyawan = await db.karyawan.findUnique({
+                where: { id: item.karyawanId },
+                select: {
+                    id: true,
+                    nama: true,
+                },
+            });
+
+            return {
+                karyawanId: item.karyawanId,
+                periode: item.periode,
+                nilaiRerata: item._avg.nilai,
+                karyawan,
+            };
+        })
+    );
+
     return karyawanRangking;
+
 }

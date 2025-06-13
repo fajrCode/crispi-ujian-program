@@ -22,9 +22,9 @@
                 @each((karyawan, index) in karyawanRangking)
                 <tr>
                     <td>{{ index + 1 }}</td>
-                    <td>{{ karyawan.karyawan.karyawan.nama }}</td>
+                    <td>{{ karyawan.karyawan.nama }}</td>
                     <td>{{ karyawan.periode }}</td>
-                    <td>{{ karyawan._avg.nilai }}</td>
+                    <td>{{ karyawan.nilaiRerata }}</td>
                 </tr>
                 @end
         </table>
