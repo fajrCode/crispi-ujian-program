@@ -24,7 +24,7 @@
             @each((karyawan, index) in karyawans)
             <tr>
                 <td>{{ index + 1 }}</td>
-                <td>{{ karyawan.nama }}</td>
+                <td class="text-blue-500"><a href="/karyawan/detail/{{ karyawan.id }}">{{ karyawan.nama }}</a></td>
                 <td>{{ karyawan.jabatan }}</td>
                 <td>{{ karyawan.unitKerja }}</td>
                 <td>{{ karyawan.tanggalBergabung }}</td>

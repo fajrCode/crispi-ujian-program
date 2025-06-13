@@ -19,6 +19,50 @@ export const getKaryawanById = async (id) => {
     return karyawan;
 };
 
+export const detailKaryawan = async (id) => {
+    // const karyawan = await db.penilaian.findMany({
+    //     where: {
+    //         karyawanId: parseInt(id),
+    //     },
+    //     select: {
+    //         id: true,
+    //         periode: true,
+    //         nilai: true,
+    //         karyawan: {
+    //             select: {
+    //                 id: true,
+    //                 nama: true
+    //             }
+    //         },
+    //         kompetensi: {
+    //             select: {
+    //                 id: true,
+    //                 namaKompetensi: true,
+    //             }
+    //         }
+    //     }
+    // });
+
+    const karyawan = await db.karyawan.findFirst({
+        where: {
+            id: parseInt(id),
+        },
+        include: {
+            Penilaian: {
+                include: {
+                    kompetensi: true,
+                }
+            }
+        }
+    })
+
+    if (!karyawan) {
+        throw new Error404('Karyawan tidak ditemukan', 404);
+    }
+
+    return karyawan;
+}
+
 export const createKaryawan = async (data) => {
     const { nama, jabatan, unitKerja, tanggalBergabung } = data;
 

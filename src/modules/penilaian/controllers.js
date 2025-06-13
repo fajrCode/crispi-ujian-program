@@ -44,6 +44,7 @@ export const edit = async (req, res, next) => {
             karyawans,
             kompetensis,
         }
+        console.log(data)
 
         res.edge('pages/penilaian/edit', data);
     } catch (error) {

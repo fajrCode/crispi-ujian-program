@@ -15,6 +15,21 @@ export const index = async (req, res, next) => {
     }
 };
 
+export const detail = async (req, res, next) => {
+    try {
+        const karyawan = await KaryawanService.detailKaryawan(req.params.id);
+        console.log(karyawan);
+        const data = {
+            title: 'Detail Karyawan',
+            karyawan,
+        }
+
+        res.edge('pages/karyawan/detail', data);
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const create = async (req, res, next) => {
     try {
         const data = {

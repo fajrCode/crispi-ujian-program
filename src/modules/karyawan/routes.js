@@ -4,6 +4,7 @@ export default (router) => {
     const prefix = '/karyawan';
     router.get(prefix + '/', UserController.index);
     router.get(prefix + '/create', UserController.create);
+    router.get(prefix + '/detail/:id', UserController.detail);
     router.get(prefix + '/edit/:id', UserController.edit);
     router.post(prefix + '/store', UserController.store);
     router.patch(prefix + '/update/:id', UserController.update);

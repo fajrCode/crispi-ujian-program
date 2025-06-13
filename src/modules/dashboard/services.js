@@ -3,7 +3,7 @@ import db from '../../configs/database.js';
 
 export const karyawanRangking = async () => {
     const rangking = await db.penilaian.groupBy({
-        by: ['karyawanId'],
+        by: ['karyawanId', 'periode'],
         _avg: {
             nilai: true,
         },
@@ -13,7 +13,6 @@ export const karyawanRangking = async () => {
             },
         },
     });
-
     const karyawanRangking = await Promise.all(rangking.map(async (item) => {
         const karyawan = await db.penilaian.findUnique({
             where: { karyawanId: item.karyawanId },
@@ -33,6 +32,5 @@ export const karyawanRangking = async () => {
             karyawan,
         };
     }));
-
     return karyawanRangking;
 }
